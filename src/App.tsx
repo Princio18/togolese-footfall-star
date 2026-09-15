@@ -1301,7 +1301,7 @@ function WelcomeSection() {
       id="welcome"
       className="scroll-mt-[46px] min-h-screen flex items-center justify-center bg-[#000000] font-montserrat px-8 lg:px-[6%] py-[80px]"
     >
-      <div className="flex w-full max-w-[1200px] flex-col items-center gap-[48px] lg:flex-row lg:items-center">
+      <div className="flex w-full max-w-[1200px] flex-col items-center gap-[48px] lg:flex-row lg:items-center lg:justify-center">
         <div className="relative w-[390px] max-w-full aspect-[390/490] shrink-0">
           <div className={square1Class} style={{ width: '74%', height: '74%', left: '117px', top: '-16px' }} />
           <div className={square2Class} style={{ width: '74%', height: '74%', right: '117px', bottom: '-16px' }} />
