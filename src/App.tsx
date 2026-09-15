@@ -18,6 +18,8 @@ import maillotFcmAvant from './assets/maillot_avant_fcm.webp'
 import maillotFcmArriere from './assets/maillot_arriere_fcm.webp'
 import maillotTotalAvant from './assets/maillot_avant_total.webp'
 import maillotTotalArriere from './assets/maillot_arriere_total.webp'
+import maillotCryAvant from './assets/maillot_avant_cry.webp'
+import maillotCryArriere from './assets/maillot_arriere_cry.webp'
 import card1 from './assets/card1.webp'
 import card2 from './assets/card2.webp'
 import card3 from './assets/card3.webp'
@@ -352,8 +354,8 @@ const CLUB_SLIDES: ClubSlide[] = [
     assists: 1,
     clubAssistsTotal: 41,
     quote: 'Crystal Palace remembers a player at the end of his career in England, who came for an emergency short-term spell that did not pay off, but who was still encouraged by the fans because of his big reputation in England.',
-    jerseyImage: '',
-    jerseyBack: '',
+    jerseyImage: maillotCryAvant,
+    jerseyBack: maillotCryArriere,
     coaches: ['Alan Pardew'],
   },
   {
