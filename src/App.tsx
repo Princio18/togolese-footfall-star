@@ -498,6 +498,7 @@ const CLUB_BAR_TEXT_OVERRIDES: Record<string, string> = {
   MCI: '#ffffff',
   TOTT: '#ffffff',
   TG: '#ffffff',
+  KAY: '#ffffff',
 }
 
 const barTextColor = (hex: string) => {
@@ -1031,15 +1032,15 @@ function CareerHighlight() {
               style={slideStyle(i)}
             >
               <div className="flex flex-col items-center">
-                <div className="flex h-24 w-24 items-center justify-center rounded-full border border-white/20 bg-white/10 backdrop-blur-md">
+                <div className="flex h-40 w-40 items-center justify-center">
                   {item.clubLogo ? (
                     <img
                       src={item.clubLogo}
                       alt={item.clubName || CLUB_VIDEO_CODES[i]}
-                      className="h-full w-full object-contain p-3"
+                      className="h-full w-full object-contain p-2"
                     />
                   ) : (
-                    <Shirt size={26} className="text-white/30" />
+                    <Shirt size={40} className="text-white/30" />
                   )}
                 </div>
                 <div className="mt-4 w-full px-2 text-center font-montserrat text-lg font-semibold leading-tight text-white">
