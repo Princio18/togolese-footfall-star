@@ -457,10 +457,23 @@ interface CareerHighlightItem {
   clubName: string
 }
 
-const CAREER_HIGHLIGHTS: CareerHighlightItem[] = CLUB_VIDEO_CODES.map(() => ({
+const CLUB_LOGO_PATHS: Record<string, string> = {
+  FCM: '/logos/logo-fcm.webp',
+  ASM: '/logos/logo-asm.webp',
+  ARS: '/logos/logo-arsenal.webp',
+  MCI: '/logos/logo-mci.webp',
+  RMA: '/logos/logo-rma.webp',
+  TOTT: '/logos/logo-tott.webp',
+  CRY: '/logos/logo-cry.webp',
+  İBFK: '/logos/logo-ibfk.webp',
+  KAY: '/logos/logo-kay.webp',
+  Olimpia: '/logos/logo-olimpia.webp',
+}
+
+const CAREER_HIGHLIGHTS: CareerHighlightItem[] = CLUB_VIDEO_CODES.map((code) => ({
   videoSrc: '',
-  clubLogo: '',
-  clubName: '',
+  clubLogo: CLUB_LOGO_PATHS[code] ?? '',
+  clubName: CLUB_SLIDES.find((s) => s.code === code)?.fullName ?? code,
 }))
 
 const ANIM_DELAY = 4000
@@ -973,33 +986,6 @@ function CareerHighlight() {
         className="mx-auto flex w-full flex-row items-center gap-10 px-12"
         style={{ height: '600px' }}
       >
-        <div className="relative h-full" style={{ width: '20%' }}>
-          {CAREER_HIGHLIGHTS.map((item, i) => (
-            <div
-              key={CLUB_VIDEO_CODES[i]}
-              className="absolute inset-0 flex flex-col justify-end"
-              style={slideStyle(i)}
-            >
-              <div className="flex flex-col items-center pb-[10%]">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full border border-white/20 bg-white/10 backdrop-blur-md">
-                  {item.clubLogo ? (
-                    <img
-                      src={item.clubLogo}
-                      alt={item.clubName || CLUB_VIDEO_CODES[i]}
-                      className="h-full w-full object-contain p-2"
-                    />
-                  ) : (
-                    <Shirt size={26} className="text-white/30" />
-                  )}
-                </div>
-                <div className="mt-3 text-center font-montserrat font-semibold text-white">
-                  {item.clubName || CLUB_VIDEO_CODES[i]}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
         <div className="relative h-full overflow-hidden rounded-lg" style={{ width: '70%' }}>
           <span className="pointer-events-none absolute top-6 right-6 z-30 font-montserrat font-bold uppercase tracking-wide text-[#fc8700]">
             CAREER HIGHLIGHT
@@ -1033,6 +1019,33 @@ function CareerHighlight() {
                   </span>
                 </div>
               )}
+            </div>
+          ))}
+        </div>
+
+        <div className="relative h-full" style={{ width: '20%' }}>
+          {CAREER_HIGHLIGHTS.map((item, i) => (
+            <div
+              key={CLUB_VIDEO_CODES[i]}
+              className="absolute inset-0 flex flex-col justify-center"
+              style={slideStyle(i)}
+            >
+              <div className="flex flex-col items-center">
+                <div className="flex h-24 w-24 items-center justify-center rounded-full border border-white/20 bg-white/10 backdrop-blur-md">
+                  {item.clubLogo ? (
+                    <img
+                      src={item.clubLogo}
+                      alt={item.clubName || CLUB_VIDEO_CODES[i]}
+                      className="h-full w-full object-contain p-3"
+                    />
+                  ) : (
+                    <Shirt size={26} className="text-white/30" />
+                  )}
+                </div>
+                <div className="mt-4 w-full px-2 text-center font-montserrat text-lg font-semibold leading-tight text-white">
+                  {item.clubName || CLUB_VIDEO_CODES[i]}
+                </div>
+              </div>
             </div>
           ))}
         </div>
