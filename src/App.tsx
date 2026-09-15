@@ -16,6 +16,8 @@ import maillotAsmAvant from './assets/maillot_avant_asm.webp'
 import maillotAsmArriere from './assets/maillot_arriere_asm.webp'
 import maillotFcmAvant from './assets/maillot_avant_fcm.webp'
 import maillotFcmArriere from './assets/maillot_arriere_fcm.webp'
+import maillotTotalAvant from './assets/maillot_avant_total.webp'
+import maillotTotalArriere from './assets/maillot_arriere_total.webp'
 import card1 from './assets/card1.webp'
 import card2 from './assets/card2.webp'
 import card3 from './assets/card3.webp'
@@ -435,21 +437,62 @@ const CLUB_SLIDES: ClubSlide[] = [
     assists: 0,
     clubAssistsTotal: 0,
     quote: 'Emmanuel Sheyi Adebayor is a Togolese forward whose powerful, dynamic style took him through some of Europe\'s biggest clubs — from AS Monaco and Arsenal to Manchester City, Real Madrid, and Tottenham — leaving behind standout scoring seasons and unforgettable moments at every stop. Beyond the trophies and goals, he became Togo\'s all-time record scorer and a source of national pride, inspiring a generation with a career built on resilience, versatility, and an unmistakable will to win.',
-    jerseyImage: '',
-    jerseyBack: '',
+    jerseyImage: maillotTotalAvant,
+    jerseyBack: maillotTotalArriere,
     coaches: [],
   },
 ]
 
 const CLUB_TABS = CLUB_SLIDES.filter((s) => s.code !== 'TOTAL')
 
+const CLUB_VIDEO_CODES = CLUB_SLIDES.filter(
+  (s) => s.code !== 'TG' && s.code !== 'TOTAL',
+).map((s) => s.code)
+
+interface CareerHighlightItem {
+  videoSrc: string
+  clubLogo: string
+  clubName: string
+}
+
+const CAREER_HIGHLIGHTS: CareerHighlightItem[] = CLUB_VIDEO_CODES.map(() => ({
+  videoSrc: '',
+  clubLogo: '',
+  clubName: '',
+}))
+
 const ANIM_DELAY = 4000
 const ANIM_DURATION = 1200
 
-const STAT_GRADIENTS = {
-  matches: 'linear-gradient(90deg, #fc8700, #ffc06b)',
-  goals: 'linear-gradient(90deg, #ff6b6b, #ffa8a8)',
-  assists: 'linear-gradient(90deg, #8b5cf6, #c4b5fd)',
+const CLUB_BAR_COLORS: Record<string, string> = {
+  FCM: '#8a1e2a',
+  ASM: '#d9021a',
+  ARS: '#023474',
+  MCI: '#6fa3de',
+  RMA: '#2365d8',
+  TOTT: '#c3a000',
+  CRY: '#2365d8',
+  'İBFK': '#ff550d',
+  KAY: '#ffa700',
+  Olimpia: '#d9021a',
+  TG: '#02b726',
+  TOTAL: '#ffffff',
+}
+
+const CLUB_BAR_TEXT_OVERRIDES: Record<string, string> = {
+  MCI: '#ffffff',
+  TOTT: '#ffffff',
+  TG: '#ffffff',
+}
+
+const barTextColor = (hex: string) => {
+  const value = hex.replace('#', '')
+  const full = value.length === 3 ? value.split('').map((c) => c + c).join('') : value
+  const r = parseInt(full.slice(0, 2), 16)
+  const g = parseInt(full.slice(2, 4), 16)
+  const b = parseInt(full.slice(4, 6), 16)
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255
+  return luminance > 0.6 ? '#000000' : '#ffffff'
 }
 
 const ratioOf = (player: number, club: number) =>
@@ -491,7 +534,8 @@ function useCountUp(
 
 interface StatBlockProps {
   label: string
-  gradient: string
+  barColor: string
+  barTextColor: string
   raw: number
   ratio: number
   ratioCount: number
@@ -501,7 +545,8 @@ interface StatBlockProps {
 
 function StatBlock({
   label,
-  gradient,
+  barColor,
+  barTextColor: barText,
   raw,
   ratio,
   ratioCount,
@@ -516,9 +561,9 @@ function StatBlock({
         <div className="relative h-8 flex-1 overflow-hidden rounded-md">
           <div
             className="absolute inset-y-0 left-0 rounded-md"
-            style={{ width, background: gradient, transition: 'width 1.2s ease-out' }}
+            style={{ width, background: barColor, transition: 'width 1.2s ease-out' }}
           />
-          <span className="relative z-10 flex h-full items-center px-3 font-montserrat text-xs font-bold uppercase tracking-wide whitespace-nowrap text-white">
+          <span className="relative z-10 flex h-full items-center px-3 font-montserrat text-xs font-bold uppercase tracking-wide whitespace-nowrap" style={{ color: barText }}>
             {label}
           </span>
         </div>
@@ -530,7 +575,7 @@ function StatBlock({
         <div className="h-[10px] flex-1 overflow-hidden rounded-full bg-white/10">
           <div
             className="h-full rounded-full opacity-50"
-            style={{ width, background: gradient, transition: 'width 1.2s ease-out' }}
+            style={{ width, background: barColor, transition: 'width 1.2s ease-out' }}
           />
         </div>
         <span className="font-montserrat text-[11px] uppercase text-white/40">RATIO</span>
@@ -620,6 +665,9 @@ function CareerStatsCarousel() {
   const matchesRatioCount = useCountUp(matchesRatio, ANIM_DURATION, animated, 2)
   const goalsRatioCount = useCountUp(goalsRatio, ANIM_DURATION, animated, 2)
   const assistsRatioCount = useCountUp(assistsRatio, ANIM_DURATION, animated, 2)
+
+  const barColor = CLUB_BAR_COLORS[slide.code] || '#fc8700'
+  const barTextColorValue = CLUB_BAR_TEXT_OVERRIDES[slide.code] || barTextColor(barColor)
 
   return (
     <section
@@ -747,7 +795,8 @@ function CareerStatsCarousel() {
         <div className="flex flex-col gap-4">
           <StatBlock
             label="Matches Played"
-            gradient={STAT_GRADIENTS.matches}
+            barColor={barColor}
+            barTextColor={barTextColorValue}
             raw={matchesCount}
             ratio={matchesRatio}
             ratioCount={matchesRatioCount}
@@ -756,7 +805,8 @@ function CareerStatsCarousel() {
           />
           <StatBlock
             label="Goals Scored"
-            gradient={STAT_GRADIENTS.goals}
+            barColor={barColor}
+            barTextColor={barTextColorValue}
             raw={goalsCount}
             ratio={goalsRatio}
             ratioCount={goalsRatioCount}
@@ -765,7 +815,8 @@ function CareerStatsCarousel() {
           />
           <StatBlock
             label="Assists"
-            gradient={STAT_GRADIENTS.assists}
+            barColor={barColor}
+            barTextColor={barTextColorValue}
             raw={assistsCount}
             ratio={assistsRatio}
             ratioCount={assistsRatioCount}
@@ -861,6 +912,130 @@ function CareerStatsCarousel() {
       </button>
 
       </section>
+  )
+}
+
+function CareerHighlight() {
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [prevIndex, setPrevIndex] = useState<number | null>(null)
+  const [phase, setPhase] = useState<'in' | 'out'>('in')
+  const firstRender = useRef(true)
+
+  const length = CAREER_HIGHLIGHTS.length
+
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false
+      return
+    }
+    setPhase('out')
+    let raf2 = 0
+    const frame1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(() => setPhase('in'))
+    })
+    const timer = window.setTimeout(() => setPrevIndex(null), 800)
+    return () => {
+      cancelAnimationFrame(frame1)
+      cancelAnimationFrame(raf2)
+      window.clearTimeout(timer)
+    }
+  }, [currentIndex])
+
+  const slideStyle = (
+    i: number,
+  ): React.CSSProperties => {
+    const isCurrent = i === currentIndex
+    const isPrev = i === prevIndex
+    return {
+      opacity: isCurrent || isPrev ? 1 : 0,
+      transform: isCurrent
+        ? phase === 'in'
+          ? 'translateX(0)'
+          : 'translateX(100%)'
+        : isPrev
+          ? 'translateX(-100%)'
+          : 'translateX(0)',
+      transition: 'transform 700ms cubic-bezier(0.22, 1, 0.36, 1), opacity 300ms ease',
+      willChange: 'transform, opacity',
+      pointerEvents: isCurrent ? 'auto' : 'none',
+      zIndex: isCurrent ? 2 : isPrev ? 1 : 0,
+    }
+  }
+
+  return (
+    <section
+      id="career-highlight"
+      className="scroll-mt-[46px] relative flex min-h-screen items-center overflow-hidden bg-[#0a0a0a]"
+    >
+      <div
+        className="mx-auto flex w-full flex-row items-center gap-10 px-12"
+        style={{ height: '600px' }}
+      >
+        <div className="relative h-full" style={{ width: '20%' }}>
+          {CAREER_HIGHLIGHTS.map((item, i) => (
+            <div
+              key={CLUB_VIDEO_CODES[i]}
+              className="absolute inset-0 flex flex-col justify-end"
+              style={slideStyle(i)}
+            >
+              <div className="flex flex-col items-center pb-[10%]">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full border border-white/20 bg-white/10 backdrop-blur-md">
+                  {item.clubLogo ? (
+                    <img
+                      src={item.clubLogo}
+                      alt={item.clubName || CLUB_VIDEO_CODES[i]}
+                      className="h-full w-full object-contain p-2"
+                    />
+                  ) : (
+                    <Shirt size={26} className="text-white/30" />
+                  )}
+                </div>
+                <div className="mt-3 text-center font-montserrat font-semibold text-white">
+                  {item.clubName || CLUB_VIDEO_CODES[i]}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="relative h-full overflow-hidden rounded-lg" style={{ width: '70%' }}>
+          <span className="pointer-events-none absolute top-6 right-6 z-30 font-montserrat font-bold uppercase tracking-wide text-[#fc8700]">
+            CAREER HIGHLIGHT
+          </span>
+          {CAREER_HIGHLIGHTS.map((item, i) => (
+            <div
+              key={CLUB_VIDEO_CODES[i]}
+              className="absolute inset-0 h-full w-full"
+              style={slideStyle(i)}
+            >
+              {item.videoSrc ? (
+                <video
+                  src={item.videoSrc}
+                  muted
+                  playsInline
+                  autoPlay={i === currentIndex}
+                  className="h-full w-full object-cover"
+                  onEnded={
+                    i === currentIndex
+                      ? () => {
+                          setPrevIndex(i)
+                          setCurrentIndex((i + 1) % length)
+                        }
+                      : undefined
+                  }
+                />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#141414] to-black">
+                  <span className="font-montserrat text-sm uppercase tracking-wide text-white/20">
+                    {CLUB_VIDEO_CODES[i]}
+                  </span>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
   )
 }
 
@@ -1299,7 +1474,7 @@ function App() {
       </nav>
 
       <main className="min-h-screen bg-[#000000] pt-[46px]">
-        <section id="sea" className="scroll-mt-[46px] px-[8px] py-[24px] h-screen">
+        <section id="sea" className="scroll-mt-[46px] px-[8px] py-[24px]">
           <div
             className="flex w-full mx-auto items-center gap-3 max-w-[1400px] h-[470px]"
             onMouseLeave={() => setFeaturedIndex(0)}
@@ -1393,9 +1568,7 @@ function App() {
           </div>
         </section>
 
-        <section id="career-highlight" className="scroll-mt-[46px] min-h-screen flex items-center justify-center bg-[#0a0a0a]">
-          <h1 className="font-montserrat text-[#6e6e6e] text-3xl">CAREER HIGHLIGHT</h1>
-        </section>
+        <CareerHighlight />
 
         <CareerStatsCarousel />
 
