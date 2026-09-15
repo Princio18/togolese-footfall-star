@@ -4,6 +4,13 @@ import { ArrowRight, ChevronLeft, ChevronRight, ChevronUp, CircleHelp, Shirt } f
 import type { IconType } from 'react-icons'
 import { FaFacebook, FaInstagram, FaSnapchat, FaTiktok, FaXTwitter } from 'react-icons/fa6'
 import adeVideo from './assets/ade.mp4'
+import videoMetz from './assets/video-metz.mp4'
+import videoAsm from './assets/video-asm.mp4'
+import videoArs from './assets/video-ars.mp4'
+import videoMci from './assets/video-mci.mp4'
+import videoRma from './assets/video-rma.mp4'
+import videoTott from './assets/video-tott.mp4'
+import videoCry from './assets/video-cry.mp4'
 import maillotAvant from './assets/maillot_avant_ars.webp'
 import maillotArriere from './assets/maillot_arriere_ars.webp'
 import maillotMciAvant from './assets/maillot_avant_mci.webp'
@@ -448,7 +455,7 @@ const CLUB_SLIDES: ClubSlide[] = [
 const CLUB_TABS = CLUB_SLIDES.filter((s) => s.code !== 'TOTAL')
 
 const CLUB_VIDEO_CODES = CLUB_SLIDES.filter(
-  (s) => s.code !== 'TG' && s.code !== 'TOTAL',
+  (s) => s.code !== 'TG' && s.code !== 'TOTAL' && s.code !== 'KAY' && s.code !== 'Olimpia',
 ).map((s) => s.code)
 
 interface CareerHighlightItem {
@@ -466,12 +473,21 @@ const CLUB_LOGO_PATHS: Record<string, string> = {
   TOTT: '/logos/logo-tott.webp',
   CRY: '/logos/logo-cry.webp',
   İBFK: '/logos/logo-ibfk.webp',
-  KAY: '/logos/logo-kay.webp',
-  Olimpia: '/logos/logo-olimpia.webp',
+}
+
+const CLUB_VIDEO_FILES: Record<string, string> = {
+  FCM: videoMetz,
+  ASM: videoAsm,
+  ARS: videoArs,
+  MCI: videoMci,
+  RMA: videoRma,
+  TOTT: videoTott,
+  CRY: videoCry,
+  İBFK: '/video-ibfk.mp4',
 }
 
 const CAREER_HIGHLIGHTS: CareerHighlightItem[] = CLUB_VIDEO_CODES.map((code) => ({
-  videoSrc: '',
+  videoSrc: CLUB_VIDEO_FILES[code] ?? '',
   clubLogo: CLUB_LOGO_PATHS[code] ?? '',
   clubName: CLUB_SLIDES.find((s) => s.code === code)?.fullName ?? code,
 }))
@@ -1032,12 +1048,12 @@ function CareerHighlight() {
               style={slideStyle(i)}
             >
               <div className="flex flex-col items-center">
-                <div className="flex h-40 w-40 items-center justify-center">
+                <div className="flex h-44 w-44 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.06] backdrop-blur-lg">
                   {item.clubLogo ? (
                     <img
                       src={item.clubLogo}
                       alt={item.clubName || CLUB_VIDEO_CODES[i]}
-                      className="h-full w-full object-contain p-2"
+                      className="h-full w-full object-contain p-3 grayscale"
                     />
                   ) : (
                     <Shirt size={40} className="text-white/30" />
