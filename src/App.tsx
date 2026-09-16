@@ -151,7 +151,7 @@ const CLUB_STATS: ClubStat[] = [
     statLink: '',
   },
   {
-    clubLogo: '/logos/Tottenham.png?v=2',
+    clubLogo: '/logos/Tottenham.png?v=3',
     clubName: 'Tottenham Hotspur',
     matchesPlayed: '113',
     shotsOnTarget: '',
@@ -471,7 +471,7 @@ const CLUB_LOGO_PATHS: Record<string, string> = {
   ARS: '/logos/logo-arsenal.webp',
   MCI: '/logos/logo-mci.webp',
   RMA: '/logos/logo-rma.webp',
-  TOTT: '/logos/logo-tott.webp',
+  TOTT: '/logos/logo-tott.webp?v=2',
   CRY: '/logos/logo-cry.webp',
   İBFK: '/logos/logo-ibfk.webp',
   TG: '/logos/logo-tg.webp',
@@ -1024,7 +1024,7 @@ function CareerHighlight() {
     >
       <div
         className="mx-auto flex w-full flex-row items-center gap-10 px-12"
-        style={{ height: '560px' }}
+        style={{ height: '550px' }}
       >
         <div className="relative h-full overflow-hidden rounded-lg" style={{ width: '70%' }}>
           <span className="pointer-events-none absolute top-6 right-6 z-30 font-montserrat font-bold uppercase tracking-wide text-[#fc8700]">
