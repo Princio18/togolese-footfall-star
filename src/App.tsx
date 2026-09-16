@@ -1022,7 +1022,7 @@ function CareerHighlight() {
       id="career-highlight"
       className="scroll-mt-[46px] relative flex min-h-screen items-center overflow-hidden bg-[#0a0a0a]"
     >
-      <div className="mx-auto flex w-full flex-col items-center gap-4 px-4 py-8 lg:h-[550px] lg:flex-row lg:items-center lg:gap-10 lg:px-12 lg:py-0">
+      <div className="mx-auto flex w-full flex-col items-center gap-4 px-4 py-8 lg:h-[530px] lg:flex-row lg:items-center lg:gap-10 lg:px-12 lg:py-0">
         <div className="relative w-full h-[300px] overflow-hidden rounded-lg lg:h-full lg:w-[70%]">
           <span className="pointer-events-none absolute top-6 right-6 z-30 font-montserrat font-bold uppercase tracking-wide text-[#fc8700]">
             CAREER HIGHLIGHT
