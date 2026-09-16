@@ -952,8 +952,21 @@ function CareerHighlight() {
   const [prevIndex, setPrevIndex] = useState<number | null>(null)
   const [phase, setPhase] = useState<'in' | 'out'>('in')
   const firstRender = useRef(true)
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([])
 
   const length = CAREER_HIGHLIGHTS.length
+
+  useEffect(() => {
+    CAREER_HIGHLIGHTS.forEach((_, idx) => {
+      const video = videoRefs.current[idx]
+      if (!video) return
+      if (idx === currentIndex) {
+        video.play().catch(() => {})
+      } else {
+        video.pause()
+      }
+    })
+  }, [currentIndex])
 
   useEffect(() => {
     if (firstRender.current) {
@@ -1018,7 +1031,9 @@ function CareerHighlight() {
                   src={item.videoSrc}
                   muted
                   playsInline
-                  autoPlay={i === currentIndex}
+                  ref={(el) => {
+                    videoRefs.current[i] = el
+                  }}
                   className="h-full w-full object-cover"
                   onEnded={
                     i === currentIndex
@@ -1077,11 +1092,33 @@ interface Brand {
   href: string
 }
 
-const BRANDS: Brand[] = Array.from({ length: 25 }, (_, i) => ({
-  name: `BRAND ${i + 1}`,
-  src: `/logos/logo${i + 1}.webp`,
-  href: '',
-}))
+const BRANDS: Brand[] = [
+  { name: 'Power Horse', src: '/logos/logo1.webp', href: 'https://power-horse.com/' },
+  { name: 'Bajaj', src: '/logos/logo2.webp', href: 'https://www.bajajauto.com/' },
+  { name: 'Spiro', src: '/logos/logo3.webp', href: 'https://www.spironet.com/' },
+  { name: 'ADE properties', src: '/logos/logo4.webp', href: 'https://adeproperties.ae/' },
+  { name: 'CAF', src: '/logos/logo5.webp', href: 'https://www.cafonline.com/fr/' },
+  { name: 'OTR', src: '/logos/logo6.webp', href: 'https://otr.tg/index.php/fr/' },
+  { name: '22BET', src: '/logos/logo7.webp', href: 'https://22bet.com/fr' },
+  { name: 'Adidas', src: '/logos/logo8.webp', href: 'https://www.adidas.fr/' },
+  { name: 'Nike', src: '/logos/logo9.webp', href: 'https://www.nike.com/' },
+  { name: 'TISMO', src: '/logos/logo10.webp', href: 'https://tismo.ch/fr/' },
+  { name: 'CDK group', src: '/logos/logo11.webp', href: 'https://cdk-group.org/' },
+  { name: 'Boxer', src: '/logos/logo12.webp', href: 'https://www.bajajauto.com/fr-tg' },
+  { name: 'Ul-lomé', src: '/logos/logo13.webp', href: 'https://univ-lome.tg/' },
+  { name: 'Sea foundation', src: '/logos/logo14.webp', href: 'https://fondationsea.com/' },
+  { name: 'Morghan university', src: '/logos/logo15.webp', href: 'https://www.morgan.edu/' },
+  { name: 'deLa cour', src: '/logos/logo16.webp', href: 'https://www.delacour.ch/' },
+  { name: 'Spyder', src: '/logos/logo17.webp', href: 'https://can-am.brp.com/on-road/fr/fr/modeles.html' },
+  { name: 'BMW', src: '/logos/logo18.webp', href: 'https://www.bmwusa.com/' },
+  { name: 'Benz', src: '/logos/logo19.webp', href: 'https://www.mercedes-benz.fr/?srsltid=AU7gw4UdlJLmCHCTEEgBpHeR-jC8porcoCoC2Oxy2bK6Hg6apxkaWXLy' },
+  { name: 'Porsche', src: '/logos/logo20.webp', href: 'https://www.porsche.com/france/' },
+  { name: 'Rolls Royce', src: '/logos/logo21.webp', href: 'https://www.rolls-roycemotorcars.com/en_GB/home.html' },
+  { name: 'Puma', src: '/logos/logo22.webp', href: 'https://eu.puma.com/fr/fr?srsltid=AU7gw4XkUERiutah8Tsy61sK4e5f_ZEsH-4uM6yXHc3xP2PWEbvs2-2n' },
+  { name: 'Franc vila', src: '/logos/logo23.webp', href: 'https://www.francvila.ch/' },
+  { name: 'Louis Vitton', src: '/logos/logo24.webp', href: 'https://us.louisvuitton.com/eng-us/homepage' },
+  { name: 'Tecno mobile', src: '/logos/logo25.webp', href: 'https://www.tecno-mobile.com/tg/' },
+]
 
 function BrandCell({ brand }: { brand: Brand }) {
   const logo = brand.src ? (
