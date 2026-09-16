@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import type { CSSProperties } from 'react'
-import { ArrowRight, ChevronLeft, ChevronRight, ChevronUp, CircleHelp, Shirt } from 'lucide-react'
+import { ArrowRight, ChevronLeft, ChevronRight, ChevronUp, CircleHelp, Menu, Shirt, X } from 'lucide-react'
 import type { IconType } from 'react-icons'
 import { FaFacebook, FaInstagram, FaSnapchat, FaTiktok, FaXTwitter } from 'react-icons/fa6'
 import adeVideo from './assets/ade.mp4'
@@ -785,13 +785,13 @@ function CareerStatsCarousel() {
           </div>
         </div>
 
-      <div className="flex w-full items-stretch gap-2" style={{ height: '420px' }}>
+      <div className="flex w-full flex-col items-stretch gap-4 lg:flex-row lg:gap-2 lg:h-[420px]">
         <div
-          className="flex flex-[0_0_30%] items-center justify-center overflow-visible"
+          className="flex h-[200px] w-full items-center justify-center overflow-visible lg:h-full lg:w-[30%]"
           style={{ perspective: '1000px' }}
         >
           {slide.jerseyImage ? (
-            <div className="maillot-spin grid h-[320px] aspect-[447/558] grid-cols-1 [grid-template-areas:'m']">
+            <div className="maillot-spin grid h-full max-h-[320px] aspect-[447/558] grid-cols-1 [grid-template-areas:'m']">
               <img
                 src={slide.jerseyImage}
                 alt={`Maillot ${slide.fullName || slide.code} (avant)`}
@@ -814,7 +814,7 @@ function CareerStatsCarousel() {
         </div>
 
         <div
-          className="flex flex-[0_0_70%] flex-col gap-5 overflow-auto rounded-[12px] p-6 backdrop-blur-lg lg:p-8"
+          className="flex w-full flex-col gap-5 overflow-auto rounded-[12px] p-6 backdrop-blur-lg lg:w-[70%] lg:p-8"
           style={{
             background: 'rgba(0,0,0,0.38)',
             border: '1px solid rgba(255,255,255,0.08)',
@@ -1022,11 +1022,8 @@ function CareerHighlight() {
       id="career-highlight"
       className="scroll-mt-[46px] relative flex min-h-screen items-center overflow-hidden bg-[#0a0a0a]"
     >
-      <div
-        className="mx-auto flex w-full flex-row items-center gap-10 px-12"
-        style={{ height: '550px' }}
-      >
-        <div className="relative h-full overflow-hidden rounded-lg" style={{ width: '70%' }}>
+      <div className="mx-auto flex w-full flex-col items-center gap-4 px-4 py-8 lg:h-[550px] lg:flex-row lg:items-center lg:gap-10 lg:px-12 lg:py-0">
+        <div className="relative w-full h-[300px] overflow-hidden rounded-lg lg:h-full lg:w-[70%]">
           <span className="pointer-events-none absolute top-6 right-6 z-30 font-montserrat font-bold uppercase tracking-wide text-[#fc8700]">
             CAREER HIGHLIGHT
           </span>
@@ -1065,7 +1062,30 @@ function CareerHighlight() {
           ))}
         </div>
 
-        <div className="relative h-full" style={{ width: '20%' }}>
+        {(() => {
+          const current = CAREER_HIGHLIGHTS[currentIndex]
+          const currentCode = CLUB_VIDEO_CODES[currentIndex]
+          return (
+            <div className="lg:hidden flex w-full flex-col items-center gap-3 px-2 pb-2">
+              <div className="flex h-20 w-20 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.06] backdrop-blur-lg">
+                {current.clubLogo ? (
+                  <img
+                    src={current.clubLogo}
+                    alt={current.clubName || currentCode}
+                    className="h-full w-full object-contain p-2 grayscale"
+                  />
+                ) : (
+                  <Shirt size={32} className="text-white/30" />
+                )}
+              </div>
+              <div className="w-full px-2 text-center font-montserrat text-base font-semibold leading-tight text-white">
+                {current.clubName || currentCode}
+              </div>
+            </div>
+          )
+        })()}
+
+        <div className="hidden lg:block relative h-full" style={{ width: '20%' }}>
           {CAREER_HIGHLIGHTS.map((item, i) => (
             <div
               key={CLUB_VIDEO_CODES[i]}
@@ -1173,7 +1193,11 @@ function HighlightCard({ index, isFeatured, onHover, type, label, title, descrip
   const isVideo = type === 'video'
 
   const wrapperClass = `group relative min-w-0 overflow-hidden rounded-[6px] bg-[#16161d] cursor-pointer transition-[flex-grow,height] duration-500 ease-in-out ${
-    isFeatured ? 'grow-[1.85] shrink basis-0 h-[460px]' : 'grow shrink basis-0 h-[340px]'
+    isFeatured
+      ? 'grow-[1.85] shrink basis-0 h-[460px]'
+      : 'grow shrink basis-0 h-[340px]'
+  } max-lg:shrink-0 max-lg:w-[80%] max-lg:snap-center max-lg:h-[340px] max-lg:border max-lg:border-transparent max-lg:transition-[flex-grow,height] ${
+    isFeatured ? 'max-lg:border-[#fc8700]' : ''
   }`
 
   const cardBody = (
@@ -1442,6 +1466,7 @@ function WelcomeSection() {
 
 function App() {
   const [clicked, setClicked] = useState<string | null>(null)
+  const [menuOpen, setMenuOpen] = useState(false)
   const [featuredIndex, setFeaturedIndex] = useState(0)
   const [showBackToTop, setShowBackToTop] = useState(false)
   const [heroOffsetY, setHeroOffsetY] = useState(0)
@@ -1539,7 +1564,7 @@ function App() {
           <span className="font-montserrat text-[#6e6e6e] text-lg font-semibold leading-none">MARECHAL</span>
           <span className="font-caveat text-[#fc8700] text-lg leading-none -mt-1.5">SEA</span>
         </div>
-        <ul className="flex gap-[22px] list-none m-0 p-0">
+        <ul className="hidden lg:flex gap-[22px] list-none m-0 p-0">
           {NAV_ITEMS.map((item, index) => (
             <li
               key={`${item.label}-${index}`}
@@ -1550,12 +1575,39 @@ function App() {
             </li>
           ))}
         </ul>
+        <button
+          type="button"
+          aria-label={menuOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
+          onClick={() => setMenuOpen((open) => !open)}
+          className="lg:hidden flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-white transition-colors duration-200 hover:border-[#fc8700] hover:text-[#fc8700]"
+        >
+          {menuOpen ? <X size={20} /> : <Menu size={20} />}
+        </button>
+        {menuOpen && (
+          <div className="fixed inset-0 top-[46px] z-[9999999998] flex flex-col items-center justify-start gap-5 bg-black/95 pt-16">
+            {NAV_ITEMS.map((item, index) => (
+              <button
+                key={`${item.label}-${index}`}
+                type="button"
+                onClick={() => {
+                  handleNavClick(item)
+                  setMenuOpen(false)
+                }}
+                className={`font-montserrat text-lg uppercase tracking-wide cursor-pointer transition-colors duration-200 ${
+                  clicked === item.label ? 'line-through text-[#fc8700]' : 'text-[#6e6e6e] hover:text-[#fc8700]'
+                }`}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+        )}
       </nav>
 
       <main className="min-h-screen bg-[#000000] pt-[46px]">
         <section id="sea" className="scroll-mt-[46px] px-[8px] py-[24px]">
           <div
-            className="flex w-full mx-auto items-center gap-3 max-w-[1400px] h-[470px]"
+            className="mx-auto flex w-full items-center gap-3 max-w-[1400px] h-auto lg:h-[470px] max-lg:overflow-x-auto max-lg:snap-x max-lg:snap-mandatory max-lg:gap-2 max-lg:px-4 max-lg:py-4"
             onMouseLeave={() => setFeaturedIndex(0)}
           >
             <HighlightCard
