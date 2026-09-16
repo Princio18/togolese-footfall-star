@@ -11,6 +11,7 @@ import videoMci from './assets/video-mci.mp4'
 import videoRma from './assets/video-rma.mp4'
 import videoTott from './assets/video-tott.mp4'
 import videoCry from './assets/video-cry.mp4'
+import videoTg from './assets/video-tg.mp4'
 import maillotAvant from './assets/maillot_avant_ars.webp'
 import maillotArriere from './assets/maillot_arriere_ars.webp'
 import maillotMciAvant from './assets/maillot_avant_mci.webp'
@@ -455,7 +456,7 @@ const CLUB_SLIDES: ClubSlide[] = [
 const CLUB_TABS = CLUB_SLIDES.filter((s) => s.code !== 'TOTAL')
 
 const CLUB_VIDEO_CODES = CLUB_SLIDES.filter(
-  (s) => s.code !== 'TG' && s.code !== 'TOTAL' && s.code !== 'KAY' && s.code !== 'Olimpia',
+  (s) => s.code !== 'TOTAL' && s.code !== 'KAY' && s.code !== 'Olimpia',
 ).map((s) => s.code)
 
 interface CareerHighlightItem {
@@ -473,6 +474,7 @@ const CLUB_LOGO_PATHS: Record<string, string> = {
   TOTT: '/logos/logo-tott.webp',
   CRY: '/logos/logo-cry.webp',
   İBFK: '/logos/logo-ibfk.webp',
+  TG: '/logos/logo-tg.webp',
 }
 
 const CLUB_VIDEO_FILES: Record<string, string> = {
@@ -484,12 +486,20 @@ const CLUB_VIDEO_FILES: Record<string, string> = {
   TOTT: videoTott,
   CRY: videoCry,
   İBFK: '/video-ibfk.mp4',
+  TG: videoTg,
+}
+
+const CLUB_HIGHLIGHT_NAMES: Record<string, string> = {
+  TG: 'Equipe Nationale Togolaise',
 }
 
 const CAREER_HIGHLIGHTS: CareerHighlightItem[] = CLUB_VIDEO_CODES.map((code) => ({
   videoSrc: CLUB_VIDEO_FILES[code] ?? '',
   clubLogo: CLUB_LOGO_PATHS[code] ?? '',
-  clubName: CLUB_SLIDES.find((s) => s.code === code)?.fullName ?? code,
+  clubName:
+    CLUB_HIGHLIGHT_NAMES[code] ??
+    CLUB_SLIDES.find((s) => s.code === code)?.fullName ??
+    code,
 }))
 
 const ANIM_DELAY = 4000
@@ -1014,7 +1024,7 @@ function CareerHighlight() {
     >
       <div
         className="mx-auto flex w-full flex-row items-center gap-10 px-12"
-        style={{ height: '600px' }}
+        style={{ height: '560px' }}
       >
         <div className="relative h-full overflow-hidden rounded-lg" style={{ width: '70%' }}>
           <span className="pointer-events-none absolute top-6 right-6 z-30 font-montserrat font-bold uppercase tracking-wide text-[#fc8700]">
