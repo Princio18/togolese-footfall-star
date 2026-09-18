@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import type { CSSProperties } from 'react'
+import { motion, useScroll, useTransform } from 'framer-motion'
 import { ArrowRight, ChevronLeft, ChevronRight, ChevronUp, CircleHelp, Menu, Shirt, X } from 'lucide-react'
 import type { IconType } from 'react-icons'
 import { FaFacebook, FaInstagram, FaSnapchat, FaTiktok, FaXTwitter } from 'react-icons/fa6'
@@ -28,6 +29,8 @@ import maillotTotalAvant from './assets/maillot_avant_total.webp'
 import maillotTotalArriere from './assets/maillot_arriere_total.webp'
 import maillotCryAvant from './assets/maillot_avant_cry.webp'
 import maillotCryArriere from './assets/maillot_arriere_cry.webp'
+import maillotIbfkAvant from './assets/maillot_avant_ibfk.png'
+import maillotIbfkArriere from './assets/maillot_arriere_ibfk.png'
 import card1 from './assets/card1.webp'
 import card2 from './assets/card2.webp'
 import card3 from './assets/card3.webp'
@@ -59,7 +62,7 @@ const HIGHLIGHTS = [
   {
     label: 'PHOTO 1',
     title: 'WHERE IT ALL BEGAN',
-    description: "Emmanuel's professional debut — the first step of a journey across Europe's biggest stages.",
+    description: "Emmanuel's professional debut the first step of a journey across Europe's biggest stages.",
     linkText: 'VIEW METZ',
   },
   {
@@ -77,7 +80,7 @@ const HIGHLIGHTS = [
   {
     label: 'PHOTO 4',
     title: 'THE GUNNER YEARS',
-    description: '62 goals in a red shirt — the season that announced him to the world.',
+    description: '62 goals in a red shirt the season that announced him to the world.',
     linkText: 'VIEW ARSENAL',
   },
   {
@@ -223,6 +226,58 @@ function ClubStatCard({ stat, tall }: { stat: ClubStat; tall?: boolean }) {
         >
           View More Stat
         </a>
+      </div>
+    </div>
+  )
+}
+
+function BestStatsMobileCards() {
+  const [frontIndex, setFrontIndex] = useState(1)
+  const leftIndex = (frontIndex + 2) % 3
+  const rightIndex = (frontIndex + 1) % 3
+
+  const cardRole = (i: number) => (i === frontIndex ? 'front' : i === leftIndex ? 'left' : 'right')
+
+  return (
+    <div className="w-full">
+      <div className="relative h-[500px] w-full">
+        {CLUB_STATS.map((stat, i) => {
+          const role = cardRole(i)
+          return (
+            <div
+              key={i}
+              className={`absolute top-1/2 -translate-y-1/2 transition-all duration-[400ms] ease-out ${
+                role === 'front'
+                  ? 'left-1/2 z-30 -translate-x-1/2 scale-100'
+                  : role === 'left'
+                    ? 'left-1/2 z-10 -translate-x-[70%] scale-90'
+                    : 'left-1/2 z-10 -translate-x-[30%] scale-90'
+              }`}
+            >
+              <div className="w-[240px] max-w-[72vw]">
+                <ClubStatCard stat={stat} tall={i === 1} />
+              </div>
+            </div>
+          )
+        })}
+      </div>
+      <div className="mt-[2px] flex items-center justify-center gap-4">
+        <button
+          type="button"
+          aria-label="Club précédent"
+          onClick={() => setFrontIndex(leftIndex)}
+          className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-white transition-colors duration-200 hover:border-[#fc8700] hover:text-[#fc8700]"
+        >
+          <ChevronLeft size={20} />
+        </button>
+        <button
+          type="button"
+          aria-label="Club suivant"
+          onClick={() => setFrontIndex(rightIndex)}
+          className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-white transition-colors duration-200 hover:border-[#fc8700] hover:text-[#fc8700]"
+        >
+          <ChevronRight size={20} />
+        </button>
       </div>
     </div>
   )
@@ -379,8 +434,8 @@ const CLUB_SLIDES: ClubSlide[] = [
     assists: 8,
     clubAssistsTotal: 148,
     quote: 'At İstanbul Başakşehir, the memory of Adebayor is particularly warm, positive, and respectful, because his time in Turkey between 2017 and 2019 is seen as a huge collective success and a priceless spotlight for this young club that was then on the rise.',
-    jerseyImage: '',
-    jerseyBack: '',
+    jerseyImage: maillotIbfkAvant,
+    jerseyBack: maillotIbfkArriere,
     coaches: ['Abdullah Avcı'],
   },
   {
@@ -446,7 +501,7 @@ const CLUB_SLIDES: ClubSlide[] = [
     clubGoalsTotal: 0,
     assists: 0,
     clubAssistsTotal: 0,
-    quote: 'Emmanuel Sheyi Adebayor is a Togolese forward whose powerful, dynamic style took him through some of Europe\'s biggest clubs — from AS Monaco and Arsenal to Manchester City, Real Madrid, and Tottenham — leaving behind standout scoring seasons and unforgettable moments at every stop. Beyond the trophies and goals, he became Togo\'s all-time record scorer and a source of national pride, inspiring a generation with a career built on resilience, versatility, and an unmistakable will to win.',
+    quote: 'Emmanuel Sheyi Adebayor is a Togolese forward whose powerful, dynamic style took him through some of Europe\'s biggest clubs from AS Monaco and Arsenal to Manchester City, Real Madrid, and Tottenham leaving behind standout scoring seasons and unforgettable moments at every stop. Beyond the trophies and goals, he became Togo\'s all-time record scorer and a source of national pride, inspiring a generation with a career built on resilience, versatility, and an unmistakable will to win.',
     jerseyImage: maillotTotalAvant,
     jerseyBack: maillotTotalArriere,
     coaches: [],
@@ -555,10 +610,7 @@ function useCountUp(
   const [value, setValue] = useState(0)
 
   useEffect(() => {
-    if (!active) {
-      setValue(0)
-      return
-    }
+    if (!active) return
     let raf = 0
     const start = performance.now()
     const tick = (now: number) => {
@@ -571,7 +623,20 @@ function useCountUp(
     return () => cancelAnimationFrame(raf)
   }, [target, duration, active, precision])
 
-  return value
+  return active ? value : 0
+}
+
+function useMediaQuery(query: string) {
+  const [matches, setMatches] = useState(() => window.matchMedia(query).matches)
+
+  useEffect(() => {
+    const mql = window.matchMedia(query)
+    const onChange = (e: MediaQueryListEvent) => setMatches(e.matches)
+    mql.addEventListener('change', onChange)
+    return () => mql.removeEventListener('change', onChange)
+  }, [query])
+
+  return matches
 }
 
 interface StatBlockProps {
@@ -598,18 +663,18 @@ function StatBlock({
   const width = active ? `${Math.round(ratio * 100)}%` : '0%'
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-1.5 md:gap-2">
       <div className="flex items-center gap-3">
         <div className="relative h-8 flex-1 overflow-hidden rounded-md">
           <div
             className="absolute inset-y-0 left-0 rounded-md"
             style={{ width, background: barColor, transition: 'width 1.2s ease-out' }}
           />
-          <span className="relative z-10 flex h-full items-center px-3 font-montserrat text-xs font-bold uppercase tracking-wide whitespace-nowrap" style={{ color: barText }}>
+          <span className="relative z-10 flex h-full items-center px-3 font-montserrat text-[11px] font-bold uppercase tracking-wide whitespace-nowrap md:text-xs" style={{ color: barText }}>
             {label}
           </span>
         </div>
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/20 font-montserrat text-sm font-bold text-white">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/20 font-montserrat text-[13px] font-bold text-white md:h-10 md:w-10 md:text-sm">
           {raw}
         </div>
       </div>
@@ -620,8 +685,8 @@ function StatBlock({
             style={{ width, background: barColor, transition: 'width 1.2s ease-out' }}
           />
         </div>
-        <span className="font-montserrat text-[11px] uppercase text-white/40">RATIO</span>
-        <span className="font-montserrat text-sm font-bold whitespace-nowrap text-white">
+        <span className="font-montserrat text-[10px] uppercase text-white/40 md:text-[11px]">RATIO</span>
+        <span className="font-montserrat text-xs font-bold whitespace-nowrap text-white md:text-sm">
           {ratioVisible ? formatRatio(ratioCount) : '-'}
         </span>
       </div>
@@ -655,9 +720,12 @@ function CareerStatsCarousel() {
   }, [])
 
   useEffect(() => {
-    setAnimated(false)
+    const reset = requestAnimationFrame(() => setAnimated(false))
     const timeout = window.setTimeout(() => setAnimated(true), ANIM_DELAY)
-    return () => window.clearTimeout(timeout)
+    return () => {
+      cancelAnimationFrame(reset)
+      window.clearTimeout(timeout)
+    }
   }, [currentIndex])
 
   useEffect(() => {
@@ -740,7 +808,7 @@ function CareerStatsCarousel() {
         </div>
       ))}
 
-      <div className="relative z-20 flex flex-col gap-6 p-6">
+      <div className="relative z-20 flex flex-col gap-3 p-3 md:gap-6 md:p-6">
         <div
           className="w-full rounded-[12px] px-4 py-3 backdrop-blur-lg"
           style={{
@@ -749,11 +817,11 @@ function CareerStatsCarousel() {
             backdropFilter: 'blur(12px)',
           }}
         >
-          <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4">
+          <div className="flex items-center justify-center gap-4 md:grid md:grid-cols-[1fr_auto_1fr]">
             <span className="justify-self-start shrink-0 font-montserrat text-xl font-bold whitespace-nowrap text-white">
               ALL STATS
             </span>
-            <div className="justify-self-center max-w-full overflow-x-auto">
+            <div className="hidden md:block justify-self-center max-w-full overflow-x-auto">
               <div className="flex items-center gap-1.5">
                 {CLUB_TABS.map((tab, i) => (
                   <button
@@ -774,7 +842,7 @@ function CareerStatsCarousel() {
             <button
               type="button"
               onClick={() => goTo(total - 1)}
-              className={`justify-self-end shrink-0 font-montserrat text-xs uppercase whitespace-nowrap rounded-full border px-2.5 py-1 transition-colors duration-200 ${
+              className={`hidden md:block justify-self-end shrink-0 font-montserrat text-xs uppercase whitespace-nowrap rounded-full border px-2.5 py-1 transition-colors duration-200 ${
                 currentIndex === total - 1
                   ? 'border-[#fc8700] bg-[#fc8700] text-black'
                   : 'border-white bg-transparent text-white/60 hover:text-white'
@@ -787,11 +855,11 @@ function CareerStatsCarousel() {
 
       <div className="flex w-full flex-col items-stretch gap-4 lg:flex-row lg:gap-2 lg:h-[420px]">
         <div
-          className="flex h-[200px] w-full items-center justify-center overflow-visible lg:h-full lg:w-[30%]"
+          className="flex h-[160px] w-full items-center justify-center overflow-visible md:h-[200px] lg:h-full lg:w-[30%]"
           style={{ perspective: '1000px' }}
         >
           {slide.jerseyImage ? (
-            <div className="maillot-spin grid h-full max-h-[320px] aspect-[447/558] grid-cols-1 [grid-template-areas:'m']">
+            <div className="maillot-spin grid h-full max-h-[240px] aspect-[447/558] grid-cols-1 [grid-template-areas:'m'] md:max-h-[320px]">
               <img
                 src={slide.jerseyImage}
                 alt={`Maillot ${slide.fullName || slide.code} (avant)`}
@@ -814,7 +882,7 @@ function CareerStatsCarousel() {
         </div>
 
         <div
-          className="flex w-full flex-col gap-5 overflow-auto rounded-[12px] p-6 backdrop-blur-lg lg:w-[70%] lg:p-8"
+          className="flex w-full flex-col gap-5 overflow-auto rounded-[12px] p-3 backdrop-blur-lg md:p-6 lg:w-[70%] lg:p-8"
           style={{
             background: 'rgba(0,0,0,0.38)',
             border: '1px solid rgba(255,255,255,0.08)',
@@ -823,13 +891,13 @@ function CareerStatsCarousel() {
           }}
         >
         <div className="flex flex-wrap gap-2">
-          <span className="pointer-events-none rounded-full border border-white/20 px-3 py-1 font-montserrat text-xs text-white">
+          <span className="pointer-events-none rounded-full border border-white/20 px-3 py-1 font-montserrat text-[11px] text-white md:text-xs">
             {slide.fullName || '—'}
           </span>
-          <span className="pointer-events-none rounded-full border border-white/20 px-3 py-1 font-montserrat text-xs text-white">
+          <span className="pointer-events-none rounded-full border border-white/20 px-3 py-1 font-montserrat text-[11px] text-white md:text-xs">
             {slide.country || '—'}
           </span>
-          <span className="pointer-events-none rounded-full border border-white/20 px-3 py-1 font-montserrat text-xs text-white whitespace-nowrap">
+          <span className="pointer-events-none rounded-full border border-white/20 px-3 py-1 font-montserrat text-[11px] text-white whitespace-nowrap md:text-xs">
             {slide.period || '—'}
           </span>
         </div>
@@ -869,7 +937,7 @@ function CareerStatsCarousel() {
 
         {slide.coaches.length > 0 && (
           <div className="flex items-center gap-2">
-            <span className="font-montserrat text-xs font-bold uppercase tracking-wide text-white/50">
+            <span className="font-montserrat text-[11px] font-bold uppercase tracking-wide text-white/50 md:text-xs">
               COACH(S):
             </span>
             {coachesOverflow && (
@@ -889,7 +957,7 @@ function CareerStatsCarousel() {
               {slide.coaches.map((coach) => (
                 <span
                   key={coach}
-                  className="pointer-events-none rounded-full border border-white/20 px-3 py-1 font-montserrat text-xs text-white"
+                  className="pointer-events-none rounded-full border border-white/20 px-3 py-1 font-montserrat text-[11px] text-white md:text-xs"
                 >
                   {coach}
                 </span>
@@ -918,16 +986,16 @@ function CareerStatsCarousel() {
             <div className="relative">
               <span
                 aria-hidden="true"
-                className="font-playfair not-italic text-6xl leading-none text-[#fc8700]/45 absolute -top-7 -left-4"
+                className="font-playfair not-italic text-4xl leading-none text-[#fc8700]/45 absolute -top-7 -left-4 md:text-6xl"
               >
                 “
               </span>
-              <blockquote className="font-playfair text-sm italic leading-relaxed text-[#f0f0f0] [text-shadow:0_2px_8px_rgba(0,0,0,0.6)] lg:text-base">
+              <blockquote className="font-playfair text-xs italic leading-relaxed text-[#f0f0f0] [text-shadow:0_2px_8px_rgba(0,0,0,0.6)] md:text-sm lg:text-base">
                 {slide.quote}
               </blockquote>
               <span
                 aria-hidden="true"
-                className="font-playfair not-italic text-6xl leading-none text-[#fc8700]/45 absolute -bottom-9 -right-3"
+                className="font-playfair not-italic text-4xl leading-none text-[#fc8700]/45 absolute -bottom-9 -right-3 md:text-6xl"
               >
                 ”
               </span>
@@ -1017,6 +1085,9 @@ function CareerHighlight() {
     }
   }
 
+  const current = CAREER_HIGHLIGHTS[currentIndex]
+  const currentCode = CLUB_VIDEO_CODES[currentIndex]
+
   return (
     <section
       id="career-highlight"
@@ -1060,13 +1131,28 @@ function CareerHighlight() {
               )}
             </div>
           ))}
+
+          <div className="md:hidden absolute bottom-4 left-4 z-30 flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.06] px-3 py-2 backdrop-blur-lg">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/[0.06]">
+              {current.clubLogo ? (
+                <img
+                  src={current.clubLogo}
+                  alt={current.clubName || currentCode}
+                  className="h-full w-full object-contain p-1 grayscale"
+                />
+              ) : (
+                <Shirt size={20} className="text-white/30" />
+              )}
+            </div>
+            <span className="font-montserrat text-sm font-semibold leading-tight text-white">
+              {current.clubName || currentCode}
+            </span>
+          </div>
         </div>
 
         {(() => {
-          const current = CAREER_HIGHLIGHTS[currentIndex]
-          const currentCode = CLUB_VIDEO_CODES[currentIndex]
           return (
-            <div className="lg:hidden flex w-full flex-col items-center gap-3 px-2 pb-2">
+            <div className="hidden md:flex lg:hidden w-full flex-col items-center gap-3 px-2 pb-2">
               <div className="flex h-20 w-20 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.06] backdrop-blur-lg">
                 {current.clubLogo ? (
                   <img
@@ -1193,11 +1279,7 @@ function HighlightCard({ index, isFeatured, onHover, type, label, title, descrip
   const isVideo = type === 'video'
 
   const wrapperClass = `group relative min-w-0 overflow-hidden rounded-[6px] bg-[#16161d] cursor-pointer transition-[flex-grow,height] duration-500 ease-in-out ${
-    isFeatured
-      ? 'grow-[1.85] shrink basis-0 h-[460px]'
-      : 'grow shrink basis-0 h-[340px]'
-  } max-lg:shrink-0 max-lg:w-[80%] max-lg:snap-center max-lg:h-[340px] max-lg:border max-lg:border-transparent max-lg:transition-[flex-grow,height] ${
-    isFeatured ? 'max-lg:border-[#fc8700]' : ''
+    isFeatured ? 'grow-[1.85] shrink basis-0 h-[460px]' : 'grow shrink basis-0 h-[340px]'
   }`
 
   const cardBody = (
@@ -1290,6 +1372,115 @@ function HighlightCard({ index, isFeatured, onHover, type, label, title, descrip
   ) : (
     <div onMouseEnter={() => onHover(index)} className={wrapperClass}>
       {cardBody}
+    </div>
+  )
+}
+
+function SeaSectionDesktop() {
+  const [featuredIndex, setFeaturedIndex] = useState(0)
+
+  return (
+    <div className="px-[8px] py-[24px]">
+      <div
+        className="mx-auto flex w-full items-center gap-3 max-w-[1400px] h-auto lg:h-[470px]"
+        onMouseLeave={() => setFeaturedIndex(0)}
+      >
+        <HighlightCard
+          index={0}
+          isFeatured={featuredIndex === 0}
+          onHover={setFeaturedIndex}
+          type="video"
+        />
+        {HIGHLIGHTS.map((item, i) => (
+          <HighlightCard
+            key={item.label}
+            index={i + 1}
+            isFeatured={featuredIndex === i + 1}
+            onHover={setFeaturedIndex}
+            type="photo"
+            label={item.label}
+            title={item.title}
+            description={item.description}
+            linkText={item.linkText}
+            src={CARD_IMAGES[i]}
+          />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function SeaSectionMobile() {
+  const [activeIndex, setActiveIndex] = useState(0)
+  const length = 6
+  const isVideo = activeIndex === 0
+  const item = isVideo ? null : HIGHLIGHTS[activeIndex - 1]
+  const mediaSrc = isVideo ? adeVideo : CARD_IMAGES[activeIndex - 1]
+  const href = isVideo ? '#career-highlight' : '#'
+  const linkText = isVideo ? 'VIEW HIGHLIGHTS' : (item?.linkText ?? 'VIEW MORE')
+
+  return (
+    <div className="relative h-screen w-full overflow-hidden bg-[#0a0a0a]">
+      {isVideo ? (
+        <video
+          className="absolute inset-0 h-full w-full object-cover grayscale-[50%]"
+          src={mediaSrc}
+          autoPlay
+          muted
+          loop
+          playsInline
+        />
+      ) : (
+        <img
+          src={mediaSrc}
+          alt={item?.label}
+          className="absolute inset-0 h-full w-full object-cover grayscale-[50%]"
+        />
+      )}
+
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+
+      <div className="absolute inset-x-0 bottom-16 px-6 text-center">
+        <h3 className="font-montserrat text-white uppercase">
+          {isVideo ? (
+            <span className="text-2xl">
+              <span className="font-light">CAREER</span>{' '}
+              <span className="font-bold">HIGHLIGHTS</span>
+            </span>
+          ) : (
+            <span className="text-lg">{item?.title ?? 'SALUT'}</span>
+          )}
+        </h3>
+        <p className="mx-auto mt-2 max-w-[420px] font-montserrat text-xs leading-relaxed text-white/85">
+          {isVideo
+            ? "Emmanuel Sheyi Adebayor's highlights and archivements."
+            : item?.description}
+        </p>
+        <a
+          href={href}
+          className="mt-3 inline-flex items-center gap-1 font-montserrat text-xs uppercase tracking-wide text-[#fc8700] no-underline"
+        >
+          {linkText}
+          <ArrowRight size={14} />
+        </a>
+      </div>
+
+      <button
+        type="button"
+        aria-label="Media précédent"
+        onClick={() => setActiveIndex((activeIndex - 1 + length) % length)}
+        className="absolute top-1/2 left-3 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/50 text-white transition-colors duration-200 hover:border-[#fc8700] hover:text-[#fc8700]"
+      >
+        <ChevronLeft size={22} />
+      </button>
+      <button
+        type="button"
+        aria-label="Media suivant"
+        onClick={() => setActiveIndex((activeIndex + 1) % length)}
+        className="absolute top-1/2 right-3 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/50 text-white transition-colors duration-200 hover:border-[#fc8700] hover:text-[#fc8700]"
+      >
+        <ChevronRight size={22} />
+      </button>
     </div>
   )
 }
@@ -1400,12 +1591,12 @@ function WelcomeSection() {
     <section
       ref={sectionRef}
       id="welcome"
-      className="scroll-mt-[46px] min-h-screen flex items-center justify-center bg-[#000000] font-montserrat px-8 lg:px-[6%] py-[80px]"
+      className="scroll-mt-[46px] min-h-screen flex items-center justify-center bg-[#000000] font-montserrat px-8 lg:px-[6%] py-[80px] overflow-x-clip"
     >
       <div className="flex w-full max-w-[1200px] flex-col items-center gap-[48px] lg:flex-row lg:items-center lg:justify-center">
-        <div className="relative w-[390px] max-w-full aspect-[390/490] shrink-0">
-          <div className={square1Class} style={{ width: '74%', height: '74%', left: '117px', top: '-16px' }} />
-          <div className={square2Class} style={{ width: '74%', height: '74%', right: '117px', bottom: '-16px' }} />
+        <div className="relative w-[240px] lg:w-[390px] max-w-full aspect-[390/490] shrink-0 mx-auto">
+          <div className={square1Class} style={{ width: '74%', height: '74%', left: '30%', top: '-16px' }} />
+          <div className={square2Class} style={{ width: '74%', height: '74%', right: '30%', bottom: '-16px' }} />
 
           <div
             className={`absolute inset-0 z-30 transition-[transform,opacity] duration-[800ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
@@ -1427,12 +1618,12 @@ function WelcomeSection() {
           </div>
         </div>
 
-        <div className="w-full lg:w-[50%] text-left">
+        <div className="w-full lg:w-[50%] text-center lg:text-left">
           <p className="text-sm uppercase tracking-[0.25em] text-[#fc8700] font-medium">
             SEA'S WORD
           </p>
 
-          <div className="mt-[13px] flex items-center gap-[7px] text-[#fc8700]">
+          <div className="mt-[13px] flex items-center justify-center gap-[7px] text-[#fc8700] lg:justify-start">
             <span className="inline-block h-[2px] w-[22px] bg-[#fc8700]" />
             <span className="inline-block h-[5px] w-[5px] rounded-full bg-[#fc8700]" />
             <span className="inline-block h-[5px] w-[5px] rounded-full bg-[#fc8700]" />
@@ -1448,11 +1639,11 @@ function WelcomeSection() {
             "
           </div>
 
-          <p className="mt-[7px] max-w-[420px] font-montserrat text-sm italic leading-[20px] text-[#ededed]/85">
+          <p className="mt-[7px] mx-auto lg:mx-0 max-w-[420px] font-montserrat text-sm italic leading-[20px] text-[#ededed]/85">
             Every match is a new story to write. Discipline, patience and belief
             carried me from Monaco's academy pitches to the biggest stadiums in the
             world. Football taught me that the hardest battles are won long before
-            you step on the pitch — in the mind.
+            you step on the pitch in the mind.
           </p>
 
           {/* <p className="mt-[31px] text-xl font-bold text-white">Emmanuel Adebayor</p> */}
@@ -1464,10 +1655,43 @@ function WelcomeSection() {
   )
 }
 
+interface StackSectionProps {
+  children: React.ReactNode
+  index: number
+  className?: string
+}
+
+function StackSection({ children, index, className = '' }: StackSectionProps) {
+  const ref = useRef<HTMLDivElement | null>(null)
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ['start start', 'end start'],
+  })
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 0.92])
+  const opacity = useTransform(scrollYProgress, [0.4, 1], [1, 0.5])
+  const brightnessValue = useTransform(scrollYProgress, [0, 1], [1, 0.6])
+  const filter = useTransform(brightnessValue, (b) => `brightness(${b})`)
+
+  return (
+    <div
+      ref={ref}
+      className={`sticky top-0 w-full min-h-screen overflow-hidden ${className}`}
+      style={{ zIndex: index }}
+    >
+      <motion.div
+        style={{ scale, opacity, filter }}
+        className="h-full w-full origin-top"
+      >
+        {children}
+      </motion.div>
+    </div>
+  )
+}
+
 function App() {
+  const isMd = useMediaQuery('(min-width: 768px)')
   const [clicked, setClicked] = useState<string | null>(null)
   const [menuOpen, setMenuOpen] = useState(false)
-  const [featuredIndex, setFeaturedIndex] = useState(0)
   const [showBackToTop, setShowBackToTop] = useState(false)
   const [heroOffsetY, setHeroOffsetY] = useState(0)
   const [atTop, setAtTop] = useState(true)
@@ -1584,7 +1808,7 @@ function App() {
           {menuOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
         {menuOpen && (
-          <div className="fixed inset-0 top-[46px] z-[9999999998] flex flex-col items-center justify-start gap-5 bg-black/95 pt-16">
+          <div className="fixed inset-0 z-[9999999998] flex flex-col items-center justify-start gap-5 bg-black pt-16">
             {NAV_ITEMS.map((item, index) => (
               <button
                 key={`${item.label}-${index}`}
@@ -1605,42 +1829,25 @@ function App() {
       </nav>
 
       <main className="min-h-screen bg-[#000000] pt-[46px]">
-        <section id="sea" className="scroll-mt-[46px] px-[8px] py-[24px]">
-          <div
-            className="mx-auto flex w-full items-center gap-3 max-w-[1400px] h-auto lg:h-[470px] max-lg:overflow-x-auto max-lg:snap-x max-lg:snap-mandatory max-lg:gap-2 max-lg:px-4 max-lg:py-4"
-            onMouseLeave={() => setFeaturedIndex(0)}
-          >
-            <HighlightCard
-              index={0}
-              isFeatured={featuredIndex === 0}
-              onHover={setFeaturedIndex}
-              type="video"
-            />
-            {HIGHLIGHTS.map((item, i) => (
-              <HighlightCard
-                key={item.label}
-                index={i + 1}
-                isFeatured={featuredIndex === i + 1}
-                onHover={setFeaturedIndex}
-                type="photo"
-                label={item.label}
-                title={item.title}
-                description={item.description}
-                linkText={item.linkText}
-                src={CARD_IMAGES[i]}
-              />
-            ))}
+        <section id="sea" className="scroll-mt-[46px]">
+          <div className="hidden md:block">
+            <SeaSectionDesktop />
+          </div>
+          <div className="block md:hidden">
+            <SeaSectionMobile />
           </div>
         </section>
 
         <WelcomeSection />
 
+        <StackSection index={10}>
         <section
           ref={heroRef}
           id="best-stats"
-          className="scroll-mt-[46px] relative overflow-hidden bg-black min-h-screen px-8 lg:px-[6%]"
+          className="scroll-mt-[46px] relative overflow-hidden bg-black min-h-screen"
         >
-          <div className="flex flex-col lg:flex-row items-stretch justify-between relative min-h-screen">
+        {isMd ? (
+          <div className="flex flex-col lg:flex-row items-stretch justify-between relative min-h-screen px-8 lg:px-[6%]">
             <div className="relative w-full lg:w-[40%] min-h-[320px] sm:min-h-[400px]">
               <div
                 className="absolute inset-0 z-10 will-change-transform [mask-image:linear-gradient(to_right,black_70%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_right,black_70%,transparent_100%)]"
@@ -1697,16 +1904,35 @@ function App() {
               </div>
             </div>
           </div>
+        ) : (
+          <div className="relative flex min-h-screen flex-col items-center justify-center gap-[3px] px-4 py-3">
+            <div className="flex flex-col items-center gap-2">
+              <div className="bg-white/10 pl-0 pr-4 py-1 w-fit">
+                <span className="text-white uppercase font-montserrat tracking-[0.2em] text-[20px]">
+                  Welcome to the
+                </span>
+              </div>
+              <div className="bg-[#fc8700]/85 pl-0 pr-4 py-1 w-fit">
+                <span className="text-white uppercase font-bold font-montserrat tracking-[0.2em] text-[20px]">
+                  E. ADEBAYOR WEBSITE
+                </span>
+              </div>
+            </div>
+            <BestStatsMobileCards />
+          </div>
+        )}
         </section>
+        </StackSection>
 
-        <CareerHighlight />
+        <StackSection index={20}>
+          <CareerHighlight />
+        </StackSection>
 
-        <CareerStatsCarousel />
+        <StackSection index={30}>
+          <CareerStatsCarousel />
+        </StackSection>
 
-        <section id="socials" className="scroll-mt-[46px] min-h-screen flex flex-col items-center justify-center bg-[#000000] px-[30px] py-[80px]">
-          <Newsletter />
-        </section>
-
+        <StackSection index={40}>
         <section id="partners" className="scroll-mt-[46px] min-h-screen bg-[#000000] flex flex-col items-center justify-center px-[30px] py-16">
           <h2 className="font-montserrat text-white text-sm uppercase tracking-[0.3em] text-center mb-12">
              BRANDS THAT{' '}
@@ -1718,20 +1944,27 @@ function App() {
             ))}
           </div>
         </section>
+        </StackSection>
+
+        <StackSection index={50}>
+        <section id="socials" className="scroll-mt-[46px] min-h-screen flex flex-col items-center justify-center bg-[#000000] px-[30px] py-[80px]">
+          <Newsletter />
+        </section>
+        </StackSection>
       </main>
 
       <footer
         ref={footerRef}
-        className="bg-black border-t border-[#6e6e6e] text-[9px] font-montserrat text-[#6e6e6e]"
+        className="bg-black border-t border-[#6e6e6e] text-[8px] md:text-[9px] font-montserrat text-[#6e6e6e]"
       >
-        <div className="flex flex-wrap items-center justify-center gap-y-2 px-6 py-[14px] max-w-[1400px] mx-auto">
-          <a href="#" className="flex-1 min-w-[140px] text-left transition-colors duration-300 hover:text-white no-underline">
+        <div className="flex flex-wrap items-center justify-between gap-x-1.5 gap-y-1 px-3 py-[14px] max-w-[1400px] mx-auto md:justify-center md:gap-y-2 md:px-6">
+          <a href="#" className="whitespace-nowrap text-left transition-colors duration-300 hover:text-white no-underline md:flex-1 md:min-w-[140px]">
             Private Policy
           </a>
-          <p className="flex-1 min-w-[220px] text-center">
-            © Emanuel Adebayor, All Rights Reserved
+          <p className="whitespace-nowrap text-center md:flex-1 md:min-w-[220px]">
+            © Emmanuel Adebayor<span className="hidden md:inline">, All Rights Reserved</span>
           </p>
-          <a href="#" className="flex-1 min-w-[140px] text-right transition-colors duration-300 hover:text-white no-underline">
+          <a href="#" className="whitespace-nowrap text-right transition-colors duration-300 hover:text-white no-underline md:flex-1 md:min-w-[140px]">
             POWERED BY CIODESIGN
           </a>
         </div>
