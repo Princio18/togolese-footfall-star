@@ -31,6 +31,10 @@ import maillotCryAvant from './assets/maillot_avant_cry.webp'
 import maillotCryArriere from './assets/maillot_arriere_cry.webp'
 import maillotIbfkAvant from './assets/maillot_avant_ibfk.png'
 import maillotIbfkArriere from './assets/maillot_arriere_ibfk.png'
+import maillotKayAvant from './assets/maillot_avant_kay.webp'
+import maillotKayArriere from './assets/maillot_arriere_kay.webp'
+import maillotOlimpiaAvant from './assets/maillot_avant_olimpia.webp'
+import maillotOlimpiaArriere from './assets/maillot_arriere_olimpia.webp'
 import card1 from './assets/card1.webp'
 import card2 from './assets/card2.webp'
 import card3 from './assets/card3.webp'
@@ -451,8 +455,8 @@ const CLUB_SLIDES: ClubSlide[] = [
     assists: 1,
     clubAssistsTotal: 29,
     quote: 'When he signed, Kayserispor hoped that Adebayor\'s experience would help the team stay at the highest level. Adebayor left a lasting impression on his teammates with his professionalism.',
-    jerseyImage: '',
-    jerseyBack: '',
+    jerseyImage: maillotKayAvant,
+    jerseyBack: maillotKayArriere,
     coaches: ['Hikmet Karaman', 'Samet Aybaba', 'Bülent Uygun'],
   },
   {
@@ -468,8 +472,8 @@ const CLUB_SLIDES: ClubSlide[] = [
     assists: 0,
     clubAssistsTotal: 44,
     quote: 'Despite his declining performances, the Paraguayan club thanked and praised Adebayor\'s efforts.',
-    jerseyImage: '',
-    jerseyBack: '',
+    jerseyImage: maillotOlimpiaAvant,
+    jerseyBack: maillotOlimpiaArriere,
     coaches: ['Daniel Garnero'],
   },
   {
